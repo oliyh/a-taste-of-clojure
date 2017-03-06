@@ -66,11 +66,13 @@
             <li>Immutable data</li>
           </ul>
           <aside class="notes">
-            
-            Clojure is a simple and concise language.
-            There is very little syntax – calling functions and data literals is pretty much all you need.
-            Clojure core is a small collection of very useful functions that operate on Clojure data structures
-            Data structures are immutable (therefore thread safe) and highly efficient
+            Need to keep this bit brief and come back to each one in much more detail later, with examples.
+          
+            These three points are the most important things to know about Clojure.
+            I'm sure most of us could agree that these three things are good things, yet they are also three of the most fundamental ways in which Clojure differs from many mainstream languages.
+            In Clojure, functions are first class. This means you can declare and call functions, pass functions into other functions and return functions just as you would any other piece of data.
+            Clojure is a simple and concise language. There is very little syntax – calling functions and data literals is pretty much all you need, in common with most lisps. This makes it quite quick to pick up once you get used to the prefix operators (because that's all there is to get used to). Clojure core is a small collection of very useful functions that operate on Clojure data structures.
+            Data structures are immutable and highly efficient. This means that if I have a reference to some data I can guarantee that no one else can mutate it while I am using it. It's a simple concept that helps you write cleaner code and guarantees thread safety and looking back now it seems bonkers that it's not the default way all software operates because it removes an entire class of problems with virtually no drawbacks. It's akin to the way the managed memory runtime of the JVM removed a whole class of problems to do with manual memory management like buffer overflow bugs which are still afflicting us in the guises of Heartbleed and the recent Cloudflare leaks. It's hard to imagine why anyone would want to go back to manually managing their memory, and it's also hard to imagine why having mutable data structures is acceptable.
             If everything is thread safe by default you can scale your program across cores without thinking about it
             Java interop is there if you need it (in both directions – can implement interfaces in clj and call from Java or call Java from clj)
             Can compile everything into a jar and just run it using java –jar
