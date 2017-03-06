@@ -32,46 +32,57 @@
 			<div class="slides">
 
 				<section data-background-image="img/data-universe.jpg" style="">
-          <br/><br/><br/><br/>
+          <br/><br/>
           <h1 class="title">A taste of Clojure</h1>
           <p style="color: black;">Oliver Hine</p>
-          <br/>
+          
           <div style="text-align: center; vertical-align: bottom; bottom: 0;">
-            <a style="color: white" class="github" target="_blank" href="https://github.com/oliyh">
-              <img class="logo" src="img/github.png"/>
+            <a style="color: black" class="github" target="_blank" href="https://github.com/oliyh">
+              <img class="logo" src="img/github-black.png"/>
               oliyh
             </a>
           </div>
-
           <aside class="notes">
             Hello, I'm Oliver Hine
-            Using Clojure for 5 years, in my day job for 4
-            A consultant for Juxt
-            Worked at OnTheMarket, two websites, data pipeline and satellites all in Clojure
-            Now at Credit Suisse building Clojure/Script UI for traders, starting another Clojure project as well
-            Today I'm going to talk about simplifying remote API integration, better ways to test integration and the library I wrote called martian that helps do this.
-            It's available on github with more code examples and explanations.
+            I'm going to talk about a functional lisp called Clojure and why you should be interested in it
+          </aside>
+        </section>
+        
+				<section data-background-image="img/about-me.jpg" style="">
+          <h2>How my journey began</h2>
+          <aside class="notes">
+            I started my career as a Java developer by default - all the jobs going at the time were in Java and I'd picked up a bit at university although I had some self-taught knowledge of ASP, PHP, Javascript and the like.
+            After moving through several teams, inheriting codebases of various ages and in various states I settled into a team that was "agile", did "TDD", "XP" and everything else where I learned vast amounts about proper software craftmanship and was very happy there for several years refactoring my way through tens of thousands of lines of carefully extracted interfaces, thoughtfully devised abstractions and meticulously complete stubs for mocked tests.
+            We had some discussions about how Java's inheritance model didn't really let us express what we wanted to do, which at the time was something more akin to traits but I never seriously considered that rewriting the beast in a language with more features was possible.
+            Fortunately a more enlightened team member introduced us to Clojure - this was around 2012 - and suddenly I had a totally different perspective on programming which I hope to share with you now.
           </aside>
         </section>
 
-
+				<section data-background-image="" style="">
+          <h2>Clojure</h2><br/><br/>
+          <ul>
+            <li>Functional</li>
+            <li>Simple, concise</li>
+            <li>Immutable data</li>
+          </ul>
+          <aside class="notes">
+            
+            Clojure is a simple and concise language.
+            There is very little syntax – calling functions and data literals is pretty much all you need.
+            Clojure core is a small collection of very useful functions that operate on Clojure data structures
+            Data structures are immutable (therefore thread safe) and highly efficient
+            If everything is thread safe by default you can scale your program across cores without thinking about it
+            Java interop is there if you need it (in both directions – can implement interfaces in clj and call from Java or call Java from clj)
+            Can compile everything into a jar and just run it using java –jar
+            Functions are first class. Functions can take functions and return functions
+            It’s relatively new and designed by one person – rather than being old, with a lot of legacy and backward compatability, designed by a committee
+            Not actually tied to the JVM, although that’s the reference version. It also compiles to javascript…
+          </aside>
+        </section>
+        
 				<section>
           <pre><code class="hljs" data-trim>
-              Introduce me:
-              Java for 6 years before coming across Clojure
-              All into tests and refactorings and OO and everything else
-              Presumably a similar background to many people here
-
-              Clojure is a simple and concise language.
-              There is very little syntax – calling functions and data literals is pretty much all you need.
-              Clojure core is a small collection of very useful functions that operate on Clojure data structures
-              Data structures are immutable (therefore thread safe) and highly efficient
-              If everything is thread safe by default you can scale your program across cores without thinking about it
-              Java interop is there if you need it (in both directions – can implement interfaces in clj and call from Java or call Java from clj)
-              Can compile everything into a jar and just run it using java –jar
-              Functions are first class. Functions can take functions and return functions
-              It’s relatively new and designed by one person – rather than being old, with a lot of legacy and backward compatability, designed by a committee
-              Not actually tied to the JVM, although that’s the reference version. It also compiles to javascript…
+              
 
               The REPL
               Live evaluate code in your IDE
@@ -125,6 +136,7 @@
 			Reveal.initialize({
 			history: true,
       margin: 0,
+      center: false,
 
 			// More info https://github.com/hakimel/reveal.js#dependencies
 			dependencies: [
