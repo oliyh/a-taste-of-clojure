@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>A taste of Clojure</title>
+    <meta name="author" content="Oliver Hine">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-species-style" content="black-translucent" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/moon.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <link rel="stylesheet" href="css/main.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section data-background-image="img/data-universe.jpg" style="">
+          <br/><br/><br/><br/>
+          <h1 class="title">A taste of Clojure</h1>
+          <p style="color: black;">Oliver Hine</p>
+          <br/>
+          <div style="text-align: center; vertical-align: bottom; bottom: 0;">
+            <a style="color: white" class="github" target="_blank" href="https://github.com/oliyh">
+              <img class="logo" src="img/github.png"/>
+              oliyh
+            </a>
+          </div>
+
+          <aside class="notes">
+            Hello, I'm Oliver Hine
+            Using Clojure for 5 years, in my day job for 4
+            A consultant for Juxt
+            Worked at OnTheMarket, two websites, data pipeline and satellites all in Clojure
+            Now at Credit Suisse building Clojure/Script UI for traders, starting another Clojure project as well
+            Today I'm going to talk about simplifying remote API integration, better ways to test integration and the library I wrote called martian that helps do this.
+            It's available on github with more code examples and explanations.
+          </aside>
+        </section>
+
+
+				<section>
+          <pre><code class="hljs" data-trim>
+              Introduce me:
+              Java for 6 years before coming across Clojure
+              All into tests and refactorings and OO and everything else
+              Presumably a similar background to many people here
+
+              Clojure is a simple and concise language.
+              There is very little syntax – calling functions and data literals is pretty much all you need.
+              Clojure core is a small collection of very useful functions that operate on Clojure data structures
+              Data structures are immutable (therefore thread safe) and highly efficient
+              If everything is thread safe by default you can scale your program across cores without thinking about it
+              Java interop is there if you need it (in both directions – can implement interfaces in clj and call from Java or call Java from clj)
+              Can compile everything into a jar and just run it using java –jar
+              Functions are first class. Functions can take functions and return functions
+              It’s relatively new and designed by one person – rather than being old, with a lot of legacy and backward compatability, designed by a committee
+              Not actually tied to the JVM, although that’s the reference version. It also compiles to javascript…
+
+              The REPL
+              Live evaluate code in your IDE
+              Changes to your code can be hotloaded into your REPL
+              Encourages exploration and less reliance on the test scaffolding we might otherwise build for basic functionality
+              Do a bit of live coding – some big hairy bit of data in a csv file, perhaps, read it out and parse it and ask questions of it
+
+              Tooling
+              Deal with parens with tools like paredit
+              Good IDEs – emacs (cider), intellij (cursive), vim (fireplace)
+
+              State – when you need it
+              Carefully managed using atoms which are thread safe
+
+              The community
+              Again because the language is relatively new the community tends to be self-selecting for people interested in new languages. This effect will gradually wear off but means that a highly skilled and helpful community exists.
+
+              What does all this mean?
+              The net effect of not having to worry about constructing a clever and complicated type hierarchy of abstract concepts
+              Become much closer to the data – it becomes tangible, you can inspect it and play with it, it’s not hidden away in some OO model
+              Functions always return the same value given the same inputs – removes a whole category of bugs (and the hardest bugs to track down as well – heisenbugs)
+              Unlikely to have threading bugs as well, also one of the harder kind of bugs to solve
+              Full front-to-back services in the same language – amazing for the developer
+
+              How does it work without types?
+              Can validate data using spec and schema at the edges of the system, leaving only happy path code inside
+              Can write generative tests using these tools to test all permutations
+              Linters can catch a lot of mistakes
+              You tend to just deal with the primitive data types which tend to be much more compact anyway – you know what sort of data you are dealing with
+              You tend to write tests using real data, because it’s just data that you can pull out of real systems and use immediately (rather than it being embedded in objects and abstractions which are hard to reconstruct in your test environment)
+              What is the right thing to test? (comedy test the right thing gif here) - the answer is everything, and having a data-oriented language helps describe and realise this
+
+              What’s cool?
+              Live server and client coding (example? Figwheel?)
+              And to another level – Devcards
+              Much more compact and concise, faster to work with (once you’ve got used to it being denser)
+              Java libraries rather than reimplementing everything from scratch
+              JVM performance
+          </code></pre>
+
+        </section>
+				<section>Slide 2</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+			history: true,
+      margin: 0,
+
+			// More info https://github.com/hakimel/reveal.js#dependencies
+			dependencies: [
+			{ src: 'plugin/notes/notes.js', async: true },
+			{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+			]
+			});
+		</script>
+	</body>
+</html>
