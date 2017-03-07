@@ -48,15 +48,15 @@ img {
     box-shadow: none;
 }
 
-.reveal .controls .navigate-left.enabled:hover, 
-.reveal .controls .navigate-left, 
+.reveal .controls .navigate-left.enabled:hover,
+.reveal .controls .navigate-left,
 .reveal .controls .navigate-left.enabled
 {
   border-right-color: rgb(255, 235, 59);
 }
 
-.reveal .controls .navigate-right.enabled:hover, 
-.reveal .controls .navigate-right, 
+.reveal .controls .navigate-right.enabled:hover,
+.reveal .controls .navigate-right,
 .reveal .controls .navigate-right.enabled
 {
   border-left-color: rgb(255, 235, 59);
@@ -67,4 +67,8 @@ img {
   padding: 0px 0px 20px 64px;
   list-style: none;
   margin: 0 0 0 -64px;
+}
+
+.yellow {
+    color: rgb(255, 235, 59);
 }

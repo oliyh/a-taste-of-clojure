@@ -35,7 +35,7 @@
           <br/><br/>
           <h1 class="title">A taste of Clojure</h1>
           <p style="color: black;">Oliver Hine</p>
-          
+
           <div style="text-align: center; vertical-align: bottom; bottom: 0;">
             <a style="color: black" class="github" target="_blank" href="https://github.com/oliyh">
               <img class="logo" src="img/github-black.png"/>
@@ -47,7 +47,7 @@
             I'm going to talk about a functional lisp called Clojure and why you should be interested in it
           </aside>
         </section>
-        
+
 				<section data-background-image="img/about-me.jpg" style="">
           <h2>How my journey began</h2>
           <aside class="notes">
@@ -66,13 +66,21 @@
             <li>Immutable data</li>
           </ul>
           <aside class="notes">
-            Need to keep this bit brief and come back to each one in much more detail later, with examples.
-          
             These three points are the most important things to know about Clojure.
-            I'm sure most of us could agree that these three things are good things, yet they are also three of the most fundamental ways in which Clojure differs from many mainstream languages.
-            In Clojure, functions are first class. This means you can declare and call functions, pass functions into other functions and return functions just as you would any other piece of data.
-            Clojure is a simple and concise language. There is very little syntax – calling functions and data literals is pretty much all you need, in common with most lisps. This makes it quite quick to pick up once you get used to the prefix operators (because that's all there is to get used to). Clojure core is a small collection of very useful functions that operate on Clojure data structures.
-            Data structures are immutable and highly efficient. This means that if I have a reference to some data I can guarantee that no one else can mutate it while I am using it. It's a simple concept that helps you write cleaner code and guarantees thread safety and looking back now it seems bonkers that it's not the default way all software operates because it removes an entire class of problems with virtually no drawbacks. It's akin to the way the managed memory runtime of the JVM removed a whole class of problems to do with manual memory management like buffer overflow bugs which are still afflicting us in the guises of Heartbleed and the recent Cloudflare leaks. It's hard to imagine why anyone would want to go back to manually managing their memory, and it's also hard to imagine why having mutable data structures is acceptable.
+            Number one, it's functional, meaning functions are first class. You can declare and call functions, pass functions into other functions and return functions just as you would any other piece of data.
+            Two is that it is simple and concise - there is very little syntax. Calling functions and data literals is pretty much all you need which makes it quick to learn and easy to read.
+            Third is that data structures are immutable and highly efficient. This means that if I have a reference to some data I can guarantee that no one else can change it while I'm using it.
+            I'll come back to these later to discuss in more detail.
+            They are listed here because they're not the norm for programming languages, even though we could probably agree that they're good things.
+            They are also basic, fundamental things. Clojure doesn't really have any clever, complicated high level abstractions that you have to learn,
+            it just does some fundamental things better.
+
+
+
+
+            In Clojure,
+            Clojure is a simple and concise language. common with most lisps. This makes it quite quick to pick up once you get used to the prefix operators (because that's all there is to get used to). Clojure core is a small collection of very useful functions that operate on Clojure data structures.
+            mutate it while I am using it. It's a simple concept that helps you write cleaner code and guarantees thread safety and looking back now it seems bonkers that it's not the default way all software operates because it removes an entire class of problems with virtually no drawbacks. It's akin to the way the managed memory runtime of the JVM removed a whole class of problems to do with manual memory management like buffer overflow bugs which are still afflicting us in the guises of Heartbleed and the recent Cloudflare leaks. It's hard to imagine why anyone would want to go back to manually managing their memory, and it's also hard to imagine why having mutable data structures is acceptable.
             If everything is thread safe by default you can scale your program across cores without thinking about it
             Java interop is there if you need it (in both directions – can implement interfaces in clj and call from Java or call Java from clj)
             Can compile everything into a jar and just run it using java –jar
@@ -81,21 +89,50 @@
             Not actually tied to the JVM, although that’s the reference version. It also compiles to javascript…
           </aside>
         </section>
-        
-				<section>
-          <pre><code class="hljs" data-trim>
-              
 
+				<section style="">
+          <h2>Clojure 💖 JVM</h2>
+          <br/><br/><br/>
+          (Clojure <span class="yellow">💖</span> Javascript too)
+
+          <aside class="notes">
+            One thing missing from the previous slide is a practical and non-functional feature of Clojure which is that it compiles to and runs on the JVM. This was a pragmatic decision made both to improve Clojure's adoption appeal to people already familiar with the JVM and because of the high performance. In addition Clojure's ability to interop with Java code means that it benefits from all the libraries in the Java ecosystem.
+
+            And one thing missing from this slide is that Clojure also compiles to Javascript which is now the world's most widespread runtime, and takes it to places that we never dreamed of before. Clojure can be used in browsers and on servers which makes it amazing for full stack development.
+          </aside>
+        </section>
+
+				<section style="">
+          <h2>Tooling</h2><br/>
+          <ul>
+            <li>Two build tools, lein and boot</li>
+            <li>All major IDEs</li>
+          </ul>
+          <img src="img/xkcd-lisp.jpg"/>
+
+          <aside class="notes">
+            There are now two build tools, after many years with just one, that take care of all your dependencies, versioning, run profiles and everything else. They're both implemented in Clojure so understanding them, extending and changing them is quite easy.
+
+            You can write Clojure with great editor support in Intellij, emacs, Eclipse and vim.
+            Some tools which really help are paredit for emacs which abstracts away all the parentheses into operations on s-expressions. I know they can be intimidating at first but after getting used to them and the naked structure of lisp unfolds before you, the patterns and metapatterns dance and you swim in the purity of quantified conception of ideas manifest.
+          </aside>
+        </section>
+
+				<section style="">
+          <h2>REPL</h2><br/>
+
+          <aside class="notes">
               The REPL
               Live evaluate code in your IDE
               Changes to your code can be hotloaded into your REPL
               Encourages exploration and less reliance on the test scaffolding we might otherwise build for basic functionality
               Do a bit of live coding – some big hairy bit of data in a csv file, perhaps, read it out and parse it and ask questions of it
+          </aside>
+        </section>
 
-              Tooling
-              Deal with parens with tools like paredit
-              Good IDEs – emacs (cider), intellij (cursive), vim (fireplace)
 
+				<section>
+          <pre><code class="hljs" data-trim>
               State – when you need it
               Carefully managed using atoms which are thread safe
 
@@ -126,7 +163,6 @@
           </code></pre>
 
         </section>
-				<section>Slide 2</section>
 			</div>
 		</div>
 
