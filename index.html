@@ -85,7 +85,9 @@
           <aside class="notes">
             One thing missing from the previous slide is a practical and non-functional feature of Clojure which is that it compiles to and runs on the JVM. This was a pragmatic decision made both to improve Clojure's adoption appeal to people already familiar with the JVM and because of the high performance. In addition Clojure's ability to interop with Java code means that it benefits from all the libraries in the Java ecosystem. Deployment is shipping an uberjar and running it with java -jar.
 
-            And one thing missing from this slide is that Clojure also compiles to Javascript which is now the world's most widespread runtime, and takes it to places that we never dreamed of before. Clojure can be used in browsers and on servers which makes it amazing for full stack development.
+            Clojure also compiles to Javascript which is now the world's most widespread runtime, and takes it to places that we never dreamed of before. Clojure can be used in browsers and on servers which makes it amazing for full stack development.
+            
+            The simplicity of lisps has always been a great benefit for executing them on different runtimes. They tend to be bootstrapped from a few simple concepts which need implementing on the platform and you're away. There is a lisp called Shen which was designed for portability, and currently has implementations on 9 different runtimes.
           </aside>
         </section>
 
@@ -103,24 +105,6 @@
 
             You can write Clojure with great editor support in Intellij, emacs, Eclipse and vim.
             Some tools which really help are paredit for emacs which abstracts away all the parentheses into operations on s-expressions. I know they can be intimidating at first but after getting used to them and the naked structure of lisp unfolds before you, the patterns and metapatterns dance and you swim in the purity of quantified conception of ideas manifest.
-          </aside>
-        </section>
-
-				<section style="">
-          <h2>REPL</h2><br/>
-
-          Video of stuff happening in a repl here, in case it all goes wrong, but
-          consider live coding as well
-
-          <aside class="notes">
-            The REPL is a live coding environment where you can evaluate any expression. REPL stands for Read, Evaluate, Print, Loop and is not unique to Clojure but to Lisps in general and even a command line interface can be thought of in the same way.
-
-            It allows you to jump straight into using Clojure without having to understand how an entire program fits together or anything else, so it's great to get started with but there is a much greater impact of having this tool at your disposal.
-
-            The IDEs I mentioned earlier integrate with a REPL environment and allow you to live-evaluation code in your IDE. You can hotload changes in source code into the REPL and it becomes a live playground for building, trying and testing code.
-
-            It encourages exploration and less reliance on the test scaffolding we might otherwise normally write as part of dogmatic TDD
-
           </aside>
         </section>
 
@@ -166,36 +150,113 @@
 ;; => 0 1 4 9 16
           </code></pre>
           <aside class="notes">
-            All of Clojure's data types are immutable. You can do anything with them, but you can't do anything to them. Every operation on them returns new immutable data and the original is unchanged.
+            All of Clojure's data types are immutable. You can do anything with them, but you can't do anything to them. Every operation on them returns new immutable data and the original is unchanged. Here, the array of numbers is unchanged even when I call functions to double or square every element. This is because the arrays I get back are brand new immutable arrays containing new data, leaving the old one untouched.
 
             Seems like a simple concept, and it is. The same concepts exists in other languages too but is rarely the default and is something you have to go out of your way to use.
 
             Why is this such a big deal? Because, in normal code, it guarantees thread safety. The source of some of the most difficult to solve problems is suddenly eradicated completely. It's comparable to the way the JVM's memory model suddenly eradicated the whole concept of buffer overflow bugs, bugs which still afflict us today in the guises of Heartbleed and just a couple of weeks ago Cloudflare's Cloudbleed incident.
+            
+            A lot of clever work went into making the Clojure data structures perform well. There are shorcuts, like concatenating lists returning a sequence referring to the original lists without actually copying the data on the heap. There is also some wizardry going on - there was an excellent talk at EuroClojure 2015 by Mohit Thatte about the implementation and some of the original solutions which were devised to make it work.
           </aside>
         </section>
 
+				<section style="">
+          <h2>Enemy of the state</h2><br/>
+          <pre><code class="hljs" data-trim>
+(def counter (atom 0))
 
+(deref counter)
+;; => 0
+
+(swap! counter inc)
+
+(deref counter)
+;; => 1
+          </code></pre>
+          
+          <aside class="notes">
+            Having said all that, Clojure is a pragmatic and usable language, and sometimes you need a little bit of state to be able to achieve that. Clojure's answer is to construct a small walled garden around special mutable references to immutable data, which are called atoms. The value an atom refers to can be updated atomically, and the values themselves are immutable.
+            
+            This gives us a safe place to store stateful things and reminds us that we are using state by making us use the wrapper functions around it. Outside the transaction we have normal Clojure data and can use it in the same way as any other data with perfect thread safety. 
+          </aside>
+        </section>
+
+				<section style="">
+          <h2>REPL</h2><br/>
+
+          Video of stuff happening in a repl here, in case it all goes wrong, but
+          consider live coding as well
+
+          <aside class="notes">
+            The REPL is a live coding environment where you can evaluate any expression. REPL stands for Read, Evaluate, Print, Loop and is not unique to Clojure but to Lisps in general and even a command line interface can be thought of in the same way.
+
+            It allows you to jump straight into using Clojure without having to understand how an entire program fits together or anything else, so it's great to get started with but there is a much greater impact of having this tool at your disposal.
+
+            The IDEs I mentioned earlier integrate with a REPL environment and allow you to live-evaluation code in your IDE. You can hotload changes in source code into the REPL and it becomes a live playground for building, trying and testing code. There's a feeling that you no longer hold your code at arm's length, interacting with it only through tests. It's more like you can now hold it in your hand, turn it to see it from different angles, try things with it and play with it.
+
+            It encourages exploration and less reliance on the test scaffolding we might otherwise normally write as part of dogmatic TDD.
+
+          </aside>
+        </section>
+        
+				<section style="">
+          <h2>Data, not types</h2><br/>
+          <pre><code class="hljs" data-trim>
+{:a [1 2 3]
+ :b "Hello"}
+          </code></pre>
+          
+          <pre><code class="hljs" data-trim>
+{:a [Int]
+ :b Str}
+          </code></pre>
+          
+          <aside class="notes">
+            The question I'd expect to be asked by a lot of developers coming from languages with type systems would be how we survive without one.
+            
+            In type systems like Java's, all the type system really tells you is that your function takes one particular kind of data and returns another kind. It doesn't help you avoid nulls, it doesn't help you cover all code execution paths, it doesn't let you skip writing code because the compiler can infer the code from your types. Languages like Haskell and Idris do those things, and are a completely different use case, but when it comes to types in Java we're really just talking about kinds of data.
+            
+            Clojure is good at data - it's designed for data. The data representations are succint and literal. Here is a vector, here is a map. Instead of checking just the kind of data, we can check the actual data flowing through our system.
+            
+            Clojure has a couple of libraries which let us describe the data we want and functions to coerce, conform and validate incoming data into the correct shape. We tend to put these checks at the edges of our systems so that we can reject data which is malformed and know with absolute certainty what the incoming data looks like. Our code within then becomes happy code without the need for null checks or guards for consistency.
+            
+            Having a description of data lets us generate data that looks like what we expect in the real world and opens up a whole new kind of testing.
+          </aside>
+        </section>
+
+				<section style="">
+          <h2>Always test the right thing</h2><br/>
+          <img class="stretch" src="img/testing.gif"/>
+          <aside class="notes">
+            Testing in Clojure is the same as testing in any other language. The mindset of the tester though is different, because of the relationship we have with data.
+            
+            A typical unit test will consist of the normal, happy path, maybe a few edge cases and maybe a few error handling cases. These are chosen by the developer based on what they know of the problem space and coverage of the unit will usually be limited by time and imagination. My experience of Java was that the effort of constructing the right objects to give to the method being tested was equal or greater than either the production code or the assertions, and a weariness of so much code could also be a limiting factor.
+            
+            In Clojure function signatures tend to be smaller, because it is easier to get sub data out of our data to send in rather than sending the whole structure. Data literals make the tests much more readable because nothing gets in the way. Both these things help the time and weariness factors, but what about imagination? What is the right thing to test?
+            
+            As I just mentioned, we use descriptions of our data in our production code to validate it looks like what our code expects and reject data that doesn't fit. We can use these same descriptions in our tests to generate ALL the data and send it into our function. We're no longer limited by our imagination and we no longer need to worry if we've tested the right thing or the wrong thing, because we've tested all the things.
+          </aside>
+        </section>
+        
+				<section data-background-image="img/double-rainbow.jpg" style="">
+          <h2>What does it mean?</h2><br/>
+          <aside class="notes">
+            I've spoken about a lot of details about Clojure. Some of them will be novel, some won't. You might think that you could accomplish the same things in language X, or Y, and you'd be right. Any language which is Turing complete can solve the same problems, but that doesn't make them all the same.
+            
+            Here are some things I've learned to really value about Clojure:
+            - It's simple. I have functions and I have data, and when I call a function with some data I know, without having to think, exactly which function I called and I know it will return the same result every time I call it. It's something that you first accept, then take for granted and finally demand as a basic human right.
+            
+            - Data is everything. I want to see it and understand it, I don't want it hidden away in objects that obscure it and make me work to get the data back out. If you want the benefits of encapsulation to avoid an implementation detail being depended on in multiple places you can still write a function to achieve that - it's normal code reuse and we do it everywhere else.
+            
+            - Entire classes of bugs eradicated. My poor brain can focus on solving business problems rather than problems with my code! We've learned from and built upon our successes and failures of the past and today our options are better than ever.
+            
+            - Being able to write code that can be run identically on the JVM or in a browser is amazing. It can reach every device on the planet and it gives great confidence when approaching a new project that Clojure can adapt to work for it. I can confidently call myself a full stack developer without a nasty feeling that I'm really just keeping my head above water on the client side stuff.
+          </aside>
+        </section>
+        
 				<section>
           <pre><code class="hljs" data-trim>
-              State – when you need it
-              Carefully managed using atoms which are thread safe
-
-              What does all this mean?
-              The net effect of not having to worry about constructing a clever and complicated type hierarchy of abstract concepts
-              Become much closer to the data – it becomes tangible, you can inspect it and play with it, it’s not hidden away in some OO model
-              Functions always return the same value given the same inputs – removes a whole category of bugs (and the hardest bugs to track down as well – heisenbugs)
-              Unlikely to have threading bugs as well, also one of the harder kind of bugs to solve
-              Full front-to-back services in the same language – amazing for the developer
-
-              How does it work without types?
-              Can validate data using spec and schema at the edges of the system, leaving only happy path code inside
-              Can write generative tests using these tools to test all permutations
-              Linters can catch a lot of mistakes
-              You tend to just deal with the primitive data types which tend to be much more compact anyway – you know what sort of data you are dealing with
-              You tend to write tests using real data, because it’s just data that you can pull out of real systems and use immediately (rather than it being embedded in objects and abstractions which are hard to reconstruct in your test environment)
-              What is the right thing to test? (comedy test the right thing gif here) - the answer is everything, and having a data-oriented language helps describe and realise this
-
-
+   
 
               What’s cool?
               Live server and client coding (example? Figwheel?)
