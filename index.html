@@ -72,21 +72,8 @@
             Third is that data structures are immutable and highly efficient. This means that if I have a reference to some data I can guarantee that no one else can change it while I'm using it.
             I'll come back to these later to discuss in more detail.
             They are listed here because they're not the norm for programming languages, even though we could probably agree that they're good things.
-            They are also basic, fundamental things. Clojure doesn't really have any clever, complicated high level abstractions that you have to learn,
-            it just does some fundamental things better.
-
-
-
-
-            In Clojure,
-            Clojure is a simple and concise language. common with most lisps. This makes it quite quick to pick up once you get used to the prefix operators (because that's all there is to get used to). Clojure core is a small collection of very useful functions that operate on Clojure data structures.
-            mutate it while I am using it. It's a simple concept that helps you write cleaner code and guarantees thread safety and looking back now it seems bonkers that it's not the default way all software operates because it removes an entire class of problems with virtually no drawbacks. It's akin to the way the managed memory runtime of the JVM removed a whole class of problems to do with manual memory management like buffer overflow bugs which are still afflicting us in the guises of Heartbleed and the recent Cloudflare leaks. It's hard to imagine why anyone would want to go back to manually managing their memory, and it's also hard to imagine why having mutable data structures is acceptable.
-            If everything is thread safe by default you can scale your program across cores without thinking about it
-            Java interop is there if you need it (in both directions – can implement interfaces in clj and call from Java or call Java from clj)
-            Can compile everything into a jar and just run it using java –jar
-            Functions are first class. Functions can take functions and return functions
-            It’s relatively new and designed by one person – rather than being old, with a lot of legacy and backward compatability, designed by a committee
-            Not actually tied to the JVM, although that’s the reference version. It also compiles to javascript…
+            They are also basic, fundamental things. Clojure doesn't really have any clever, complicated high level abstractions that you have to learn. Abstractions are what the programs we write should do, and trying to line up the abstractions of our programs with the abstractions of our language is often quite hard to do and can add a lot of complexity.
+            Clojure is about stripping out all the complexity that comes from the language and giving you a tool that does simple, fundamental things very well.
           </aside>
         </section>
 
@@ -96,7 +83,7 @@
           (Clojure <span class="yellow">💖</span> Javascript too)
 
           <aside class="notes">
-            One thing missing from the previous slide is a practical and non-functional feature of Clojure which is that it compiles to and runs on the JVM. This was a pragmatic decision made both to improve Clojure's adoption appeal to people already familiar with the JVM and because of the high performance. In addition Clojure's ability to interop with Java code means that it benefits from all the libraries in the Java ecosystem.
+            One thing missing from the previous slide is a practical and non-functional feature of Clojure which is that it compiles to and runs on the JVM. This was a pragmatic decision made both to improve Clojure's adoption appeal to people already familiar with the JVM and because of the high performance. In addition Clojure's ability to interop with Java code means that it benefits from all the libraries in the Java ecosystem. Deployment is shipping an uberjar and running it with java -jar.
 
             And one thing missing from this slide is that Clojure also compiles to Javascript which is now the world's most widespread runtime, and takes it to places that we never dreamed of before. Clojure can be used in browsers and on servers which makes it amazing for full stack development.
           </aside>
@@ -108,6 +95,7 @@
             <li>Two build tools, lein and boot</li>
             <li>All major IDEs</li>
           </ul>
+          <br/>
           <img src="img/xkcd-lisp.jpg"/>
 
           <aside class="notes">
@@ -121,12 +109,68 @@
 				<section style="">
           <h2>REPL</h2><br/>
 
+          Video of stuff happening in a repl here, in case it all goes wrong, but
+          consider live coding as well
+
           <aside class="notes">
-              The REPL
-              Live evaluate code in your IDE
-              Changes to your code can be hotloaded into your REPL
-              Encourages exploration and less reliance on the test scaffolding we might otherwise build for basic functionality
-              Do a bit of live coding – some big hairy bit of data in a csv file, perhaps, read it out and parse it and ask questions of it
+            The REPL is a live coding environment where you can evaluate any expression. REPL stands for Read, Evaluate, Print, Loop and is not unique to Clojure but to Lisps in general and even a command line interface can be thought of in the same way.
+
+            It allows you to jump straight into using Clojure without having to understand how an entire program fits together or anything else, so it's great to get started with but there is a much greater impact of having this tool at your disposal.
+
+            The IDEs I mentioned earlier integrate with a REPL environment and allow you to live-evaluation code in your IDE. You can hotload changes in source code into the REPL and it becomes a live playground for building, trying and testing code.
+
+            It encourages exploration and less reliance on the test scaffolding we might otherwise normally write as part of dogmatic TDD
+
+          </aside>
+        </section>
+
+				<section style="">
+          <h2>Functional, Simple</h2><br/>
+          <pre><code class="hljs" data-trim>
+(defn doubles [x]
+  (* x 2))
+
+(defn sequence-that [f]
+  (map f (range 5)))
+
+(sequence-that doubles)
+;; => 0 2 4 6 8
+          </code></pre>
+          <pre><code class="hljs" data-trim>
+(defn squares [x]
+  (* x x))
+
+(sequence-that (comp squares doubles))
+;; => 0 4 16 36 64
+          </code></pre>
+          <aside class="notes">
+            Functional languages treat functions as first class citizens that can be referred to in the same way as everything else, allowing them to be passed around, called, closed over. Of course, you can achieve similar-looking code in a non-functional language but at a far greater cost in boilerplate, lines of code and glue which all add to the cognitive weight of the project.
+
+            When everything is stripped back to the bare definition of what it does it removes a lot of background processing from your brain, giving you a little extra capacity to focus on the task in hand. When entire concepts are removed, like static or final or overrides, you can look at a function and see what it does without worrying about constantly trying to work out if it was called on an instantiated object or is static, if the current state of the object can affect the return value, if this is the function being called or if someone has overridden it somewhere else.
+
+            Your brain can slowly unwind and think about the problem you're actually trying to solve, to derive data from other data, and not have to fight uncertainty which has been built into the programming language you're using.
+
+            Clojure owes its simplicity to its creator, Rich Hickey, who is a deep thinker and gave a great talk entitled Simple Made Easy explaining the rationale. It’s relatively new and designed by one person – rather than being old, with a lot of legacy and backward compatability, designed by a committee.
+          </aside>
+        </section>
+
+				<section style="">
+          <h2>Can't touch this</h2><br/>
+          <pre><code class="hljs" data-trim>
+(def numbers [0 1 2 3 4])
+
+(map doubles numbers)
+;; => 0 2 4 6 8
+
+(map squares numbers)
+;; => 0 1 4 9 16
+          </code></pre>
+          <aside class="notes">
+            All of Clojure's data types are immutable. You can do anything with them, but you can't do anything to them. Every operation on them returns new immutable data and the original is unchanged.
+
+            Seems like a simple concept, and it is. The same concepts exists in other languages too but is rarely the default and is something you have to go out of your way to use.
+
+            Why is this such a big deal? Because, in normal code, it guarantees thread safety. The source of some of the most difficult to solve problems is suddenly eradicated completely. It's comparable to the way the JVM's memory model suddenly eradicated the whole concept of buffer overflow bugs, bugs which still afflict us today in the guises of Heartbleed and just a couple of weeks ago Cloudflare's Cloudbleed incident.
           </aside>
         </section>
 
@@ -135,9 +179,6 @@
           <pre><code class="hljs" data-trim>
               State – when you need it
               Carefully managed using atoms which are thread safe
-
-              The community
-              Again because the language is relatively new the community tends to be self-selecting for people interested in new languages. This effect will gradually wear off but means that a highly skilled and helpful community exists.
 
               What does all this mean?
               The net effect of not having to worry about constructing a clever and complicated type hierarchy of abstract concepts
@@ -154,12 +195,19 @@
               You tend to write tests using real data, because it’s just data that you can pull out of real systems and use immediately (rather than it being embedded in objects and abstractions which are hard to reconstruct in your test environment)
               What is the right thing to test? (comedy test the right thing gif here) - the answer is everything, and having a data-oriented language helps describe and realise this
 
+
+
               What’s cool?
               Live server and client coding (example? Figwheel?)
               And to another level – Devcards
               Much more compact and concise, faster to work with (once you’ve got used to it being denser)
               Java libraries rather than reimplementing everything from scratch
               JVM performance
+
+              The community
+              Again because the language is relatively new the community tends to be self-selecting for people interested in new languages. This effect will gradually wear off but means that a highly skilled and helpful community exists.
+
+
           </code></pre>
 
         </section>
