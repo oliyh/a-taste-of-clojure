@@ -83,10 +83,12 @@
           (Clojure <span class="yellow">💖</span> Javascript too)
 
           <aside class="notes">
-            One thing missing from the previous slide is a practical and non-functional feature of Clojure which is that it compiles to and runs on the JVM. This was a pragmatic decision made both to improve Clojure's adoption appeal to people already familiar with the JVM and because of the high performance. In addition Clojure's ability to interop with Java code means that it benefits from all the libraries in the Java ecosystem. Deployment is shipping an uberjar and running it with java -jar.
+            One thing missing from the previous slide is a practical and non-functional feature of Clojure which is that it compiles to and runs on the JVM. This was a pragmatic decision made both to improve Clojure's adoption appeal to people already familiar with the JVM and because of the high performance. In addition Clojure's ability to interop with Java code means that it benefits from all the libraries in the Java ecosystem so Clojure could hit the ground running without a lot of libraries having to be written first.
+
+            Deployment is shipping an uberjar and running it with java -jar and popular deployment stacks like Heroku support Clojure making deployment really easy.
 
             Clojure also compiles to Javascript which is now the world's most widespread runtime, and takes it to places that we never dreamed of before. Clojure can be used in browsers and on servers which makes it amazing for full stack development.
-            
+
             The simplicity of lisps has always been a great benefit for executing them on different runtimes. They tend to be bootstrapped from a few simple concepts which need implementing on the platform and you're away. There is a lisp called Shen which was designed for portability, and currently has implementations on 9 different runtimes.
           </aside>
         </section>
@@ -155,10 +157,24 @@
             Seems like a simple concept, and it is. The same concepts exists in other languages too but is rarely the default and is something you have to go out of your way to use.
 
             Why is this such a big deal? Because, in normal code, it guarantees thread safety. The source of some of the most difficult to solve problems is suddenly eradicated completely. It's comparable to the way the JVM's memory model suddenly eradicated the whole concept of buffer overflow bugs, bugs which still afflict us today in the guises of Heartbleed and just a couple of weeks ago Cloudflare's Cloudbleed incident.
-            
+
             A lot of clever work went into making the Clojure data structures perform well. There are shorcuts, like concatenating lists returning a sequence referring to the original lists without actually copying the data on the heap. There is also some wizardry going on - there was an excellent talk at EuroClojure 2015 by Mohit Thatte about the implementation and some of the original solutions which were devised to make it work.
           </aside>
         </section>
+
+				<section style="">
+          <h2>Lazy</h2><br/>
+          <pre><code class="hljs" data-trim>
+lazy stuff here - fibonnaci?
+          </code></pre>
+
+          <aside class="notes">
+            Immutability gives rise to the possibility of code that evaluates lazily, at another time and even in another thread, on basic data structures.
+
+            This can also lead to inversion of control e.g. describe an infinite sequence and decide outside the sequence how many elements you want, rather than having to pass in an arbitrary limit to the sequence which pollutes your pure mathematical definition.
+          </aside>
+        </section>
+
 
 				<section style="">
           <h2>Enemy of the state</h2><br/>
@@ -173,11 +189,11 @@
 (deref counter)
 ;; => 1
           </code></pre>
-          
+
           <aside class="notes">
             Having said all that, Clojure is a pragmatic and usable language, and sometimes you need a little bit of state to be able to achieve that. Clojure's answer is to construct a small walled garden around special mutable references to immutable data, which are called atoms. The value an atom refers to can be updated atomically, and the values themselves are immutable.
-            
-            This gives us a safe place to store stateful things and reminds us that we are using state by making us use the wrapper functions around it. Outside the transaction we have normal Clojure data and can use it in the same way as any other data with perfect thread safety. 
+
+            This gives us a safe place to store stateful things and reminds us that we are using state by making us use the wrapper functions around it. Outside the transaction we have normal Clojure data and can use it in the same way as any other data with perfect thread safety.
           </aside>
         </section>
 
@@ -198,28 +214,28 @@
 
           </aside>
         </section>
-        
+
 				<section style="">
           <h2>Data, not types</h2><br/>
           <pre><code class="hljs" data-trim>
 {:a [1 2 3]
  :b "Hello"}
           </code></pre>
-          
+
           <pre><code class="hljs" data-trim>
 {:a [Int]
  :b Str}
           </code></pre>
-          
+
           <aside class="notes">
             The question I'd expect to be asked by a lot of developers coming from languages with type systems would be how we survive without one.
-            
+
             In type systems like Java's, all the type system really tells you is that your function takes one particular kind of data and returns another kind. It doesn't help you avoid nulls, it doesn't help you cover all code execution paths, it doesn't let you skip writing code because the compiler can infer the code from your types. Languages like Haskell and Idris do those things, and are a completely different use case, but when it comes to types in Java we're really just talking about kinds of data.
-            
+
             Clojure is good at data - it's designed for data. The data representations are succint and literal. Here is a vector, here is a map. Instead of checking just the kind of data, we can check the actual data flowing through our system.
-            
+
             Clojure has a couple of libraries which let us describe the data we want and functions to coerce, conform and validate incoming data into the correct shape. We tend to put these checks at the edges of our systems so that we can reject data which is malformed and know with absolute certainty what the incoming data looks like. Our code within then becomes happy code without the need for null checks or guards for consistency.
-            
+
             Having a description of data lets us generate data that looks like what we expect in the real world and opens up a whole new kind of testing.
           </aside>
         </section>
@@ -229,46 +245,70 @@
           <img class="stretch" src="img/testing.gif"/>
           <aside class="notes">
             Testing in Clojure is the same as testing in any other language. The mindset of the tester though is different, because of the relationship we have with data.
-            
+
             A typical unit test will consist of the normal, happy path, maybe a few edge cases and maybe a few error handling cases. These are chosen by the developer based on what they know of the problem space and coverage of the unit will usually be limited by time and imagination. My experience of Java was that the effort of constructing the right objects to give to the method being tested was equal or greater than either the production code or the assertions, and a weariness of so much code could also be a limiting factor.
-            
+
             In Clojure function signatures tend to be smaller, because it is easier to get sub data out of our data to send in rather than sending the whole structure. Data literals make the tests much more readable because nothing gets in the way. Both these things help the time and weariness factors, but what about imagination? What is the right thing to test?
-            
+
             As I just mentioned, we use descriptions of our data in our production code to validate it looks like what our code expects and reject data that doesn't fit. We can use these same descriptions in our tests to generate ALL the data and send it into our function. We're no longer limited by our imagination and we no longer need to worry if we've tested the right thing or the wrong thing, because we've tested all the things.
           </aside>
         </section>
-        
+
+				<section style="">
+          <h2>Not so good</h2><br/>
+
+          <aside class="notes">
+            Of course there's no such thing as a silver bullet and I have to be honest about some of the shortcomings of Clojure.
+
+            Startup speed - because after the runtime has started it still has to bootstrap itself before you can do anything. A lot better on Javascript though
+
+            Refactoring - really quite good in intellij but still could be better.
+
+            Profiling and debugging - a bit harder due to lazy evaluation and a lot of anonymous frames
+
+            None of these are killers, just on the wishlist
+          </aside>
+        </section>
+
 				<section data-background-image="img/double-rainbow.jpg" style="">
           <h2>What does it mean?</h2><br/>
           <aside class="notes">
             I've spoken about a lot of details about Clojure. Some of them will be novel, some won't. You might think that you could accomplish the same things in language X, or Y, and you'd be right. Any language which is Turing complete can solve the same problems, but that doesn't make them all the same.
-            
+
             Here are some things I've learned to really value about Clojure:
             - It's simple. I have functions and I have data, and when I call a function with some data I know, without having to think, exactly which function I called and I know it will return the same result every time I call it. It's something that you first accept, then take for granted and finally demand as a basic human right.
-            
+
             - Data is everything. I want to see it and understand it, I don't want it hidden away in objects that obscure it and make me work to get the data back out. If you want the benefits of encapsulation to avoid an implementation detail being depended on in multiple places you can still write a function to achieve that - it's normal code reuse and we do it everywhere else.
-            
+
             - Entire classes of bugs eradicated. My poor brain can focus on solving business problems rather than problems with my code! We've learned from and built upon our successes and failures of the past and today our options are better than ever.
-            
+
             - Being able to write code that can be run identically on the JVM or in a browser is amazing. It can reach every device on the planet and it gives great confidence when approaching a new project that Clojure can adapt to work for it. I can confidently call myself a full stack developer without a nasty feeling that I'm really just keeping my head above water on the client side stuff.
           </aside>
         </section>
-        
+
+				<section style="">
+          <h2>Community</h2><br/>
+
+          <aside class="notes">
+            Clojure's community is exciting because the language itself is still relatively new. It means that participants by definition are curious about new languages and bring their enthusiasm and thirst for learning with them. For the same reason it also means that developers come from many different backgrounds - some from Java and other JVM languages, some from other lisps, some from other functional languages. Everyone brings some knowledge with them and can feed the best bits into the ecosystem for us all to benefit from.
+
+            Clojure itself is open source and has a public issue tracker that anyone can access. The creator of Clojure, Rich Hickey, along with the creator of Clojurescript David Nolen and many other contributors are found at the major conferences and are very well connected with those using the language.
+
+            Clojure also seems to have attained a critical mass in industry adoption. Years back it would take a coordinated campaign of lobbying to have any new language considered over the Java and Dot Net status quo, including Clojure. The fact that it ran on an existing runtime was possibly what helped to tip the balance for our first few projects.
+
+            Since then the increase in the number of usable, mainstream languages has helped make the argument easier but Clojure now has many high profile success stories. I've personally used it on successful projects in two investment banks and for the entire technology stack of one of the UK's largest property websites, OnTheMarket.com serving millions of users a day. The consultancy I work for, Juxt, specialises in Clojure and has helped deliver successful projects across many other industries from fashion to a boris bike scheme in Spain where Clojure runs on Point of Sale terminals. There are several teams with Clojure projects at Credit Suisse, where I am now, including the two owned by my team which are Clojure on the server and Clojurescript on the client. My team is also currently hiring so have a chat with me later if you'd like to know more.
+          </aside>
+        </section>
+
+
 				<section>
           <pre><code class="hljs" data-trim>
-   
+
 
               What’s cool?
               Live server and client coding (example? Figwheel?)
               And to another level – Devcards
               Much more compact and concise, faster to work with (once you’ve got used to it being denser)
-              Java libraries rather than reimplementing everything from scratch
-              JVM performance
-
-              The community
-              Again because the language is relatively new the community tends to be self-selecting for people interested in new languages. This effect will gradually wear off but means that a highly skilled and helpful community exists.
-
-
           </code></pre>
 
         </section>
