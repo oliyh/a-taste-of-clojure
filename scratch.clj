@@ -24,3 +24,7 @@
 
 (map squares numbers)
 ;; => 0 1 4 9 16
+
+(defn fib
+  ([] (fib 0 1))
+  ([i j] (lazy-seq (cons i (fib j (+ i j))))))

@@ -165,13 +165,17 @@
 				<section style="">
           <h2>Lazy</h2><br/>
           <pre><code class="hljs" data-trim>
-lazy stuff here - fibonnaci?
+(defn fib
+  ([] (fib 0 1))
+  ([i j] (lazy-seq (cons i (fib j (+ i j))))))
           </code></pre>
 
           <aside class="notes">
             Immutability gives rise to the possibility of code that evaluates lazily, at another time and even in another thread, on basic data structures.
 
-            This can also lead to inversion of control e.g. describe an infinite sequence and decide outside the sequence how many elements you want, rather than having to pass in an arbitrary limit to the sequence which pollutes your pure mathematical definition.
+            This code here represents the Fibonnacci sequence. Notice how pure it is - stating that the first two numbers in the sequence are zero and one, and that every subsequent number is the sum of the previous two. There's hardly any implementation detail - for example, it's an infinite series but we haven't given it a limit as to how many numbers we want in the sequence. It's an example of an infinite list, lazily evaluated so that we can take as many items as we want without having to fit an infinite series in memory.
+
+            This has led to an inversion of control - without lazy sequences we would have had to add an extra parameter to our fib function, stating how many elements we wanted. This would have broken our pure mathematical description and let implementation details creep in. Suddenly if I had a Fibonnacci sequence that was limited to 1000 elements I would have to make sure that everyone who used it was ok with that. With a lazily evaluated sequence I can pass the infinite sequence around and anyone can use as many elements as they want.
           </aside>
         </section>
 
@@ -239,6 +243,17 @@ lazy stuff here - fibonnaci?
             Having a description of data lets us generate data that looks like what we expect in the real world and opens up a whole new kind of testing.
           </aside>
         </section>
+
+				<section style="">
+          <h2>Some code</h2><br/>
+
+          <aside class="notes">
+            So having introduced those few things I'll now show you a quick practical example of working with data in Clojure. Here I have a CSV file containing house sales - it tells you the address of the property, a few details about the number of beds and square footage and the price it sold for.
+
+            Talk through the code...
+          </aside>
+        </section>
+
 
 				<section style="">
           <h2>Always test the right thing</h2><br/>
