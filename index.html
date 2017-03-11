@@ -162,8 +162,8 @@
           </aside>
         </section>
 
-				<section style="">
-          <h2>Lazy</h2><br/>
+				<section data-background-image="img/to-infinity.jpg" style="">
+          <h2>To infinity...</h2><br/>
           <pre><code class="hljs" data-trim>
 (defn fib
   ([] (fib 0 1))
@@ -173,9 +173,24 @@
           <aside class="notes">
             Immutability gives rise to the possibility of code that evaluates lazily, at another time and even in another thread, on basic data structures.
 
-            This code here represents the Fibonnacci sequence. Notice how pure it is - stating that the first two numbers in the sequence are zero and one, and that every subsequent number is the sum of the previous two. There's hardly any implementation detail - for example, it's an infinite series but we haven't given it a limit as to how many numbers we want in the sequence. It's an example of an infinite list, lazily evaluated so that we can take as many items as we want without having to fit an infinite series in memory.
+            This code here represents the Fibonnacci sequence. Notice how pure it is - stating that the first two numbers in the sequence are zero and one, and that every subsequent number is the sum of the previous two. There's hardly any implementation detail - we're just describing the series, going off into infinity.
+        </section>
 
-            This has led to an inversion of control - without lazy sequences we would have had to add an extra parameter to our fib function, stating how many elements we wanted. This would have broken our pure mathematical description and let implementation details creep in. Suddenly if I had a Fibonnacci sequence that was limited to 1000 elements I would have to make sure that everyone who used it was ok with that. With a lazily evaluated sequence I can pass the infinite sequence around and anyone can use as many elements as they want.
+				<section style="">
+          <h2>Inversion of control</h2><br/>
+          <pre><code class="hljs" data-trim>
+(take 10 (fib))
+;; => [0 1 1 2 3 5 8 13 21 34]
+          </code></pre>
+
+          <aside class="notes">
+            So what good is an infinite series? We can't evaluate the whole thing, because we'd either run out of heap or reach the heat death of the universe. We haven't given the function a limit as to how many numbers we want in the sequence.
+
+            Instead we can decide outside the series how many elements we want. They are evaluated lazily so if I ask for 10 elements it only has to calculate the first ten and then it will stop.
+
+            This has led to an inversion of control where the data and the use of the data have been separated which makes both the code and the data more reusable. If I had a Fibonnacci sequence that was limited to 1000 elements I would have to make sure that everywhere I used it was ok with that. With a lazily evaluated sequence I can pass the infinite sequence around and anyone can use as many elements as they want.
+
+            This sort of thing makes your code more reusable, easier to read and purer and is just one of the ways that Clojure lets you express solutions in a different way.
           </aside>
         </section>
 
@@ -195,7 +210,7 @@
           </code></pre>
 
           <aside class="notes">
-            Having said all that, Clojure is a pragmatic and usable language, and sometimes you need a little bit of state to be able to achieve that. Clojure's answer is to construct a small walled garden around special mutable references to immutable data, which are called atoms. The value an atom refers to can be updated atomically, and the values themselves are immutable.
+            Although Clojure is immutable and stateless by default, it's also a pragmatic and usable language, and sometimes you need a little bit of state to be able to achieve that. Clojure's answer is to construct a small walled garden around special mutable references to immutable data, which are called atoms. The value an atom refers to can be updated atomically, and the values themselves are immutable.
 
             This gives us a safe place to store stateful things and reminds us that we are using state by making us use the wrapper functions around it. Outside the transaction we have normal Clojure data and can use it in the same way as any other data with perfect thread safety.
           </aside>
@@ -237,10 +252,25 @@
             In type systems like Java's, all the type system really tells you is that your function takes one particular kind of data and returns another kind. It doesn't help you avoid nulls, it doesn't help you cover all code execution paths, it doesn't let you skip writing code because the compiler can infer the code from your types. Languages like Haskell and Idris do those things, and are a completely different use case, but when it comes to types in Java we're really just talking about kinds of data.
 
             Clojure is good at data - it's designed for data. The data representations are succint and literal. Here is a vector, here is a map. Instead of checking just the kind of data, we can check the actual data flowing through our system.
+          </aside>
+        </section>
 
+				<section data-background-image="img/schemas-everywhere.jpg" style="">
+          <h2>Schemas everywhere</h2><br/><br/><br/>
+          <pre><code class="hljs" data-trim>
+(defschema Foo {:a [Int]
+                :b Str})
+
+(validate Foo {:a "not numbers"
+               :b :not-a-string})
+
+;; => ExceptionInfo Value does not match schema:
+;;    {:a (not (sequential? "not numbers")),
+;;     :b (not (instance? java.lang.String :not-a-string))}
+          </code></pre>
+
+          <aside class="notes">
             Clojure has a couple of libraries which let us describe the data we want and functions to coerce, conform and validate incoming data into the correct shape. We tend to put these checks at the edges of our systems so that we can reject data which is malformed and know with absolute certainty what the incoming data looks like. Our code within then becomes happy code without the need for null checks or guards for consistency.
-
-            Having a description of data lets us generate data that looks like what we expect in the real world and opens up a whole new kind of testing.
           </aside>
         </section>
 
@@ -254,7 +284,6 @@
           </aside>
         </section>
 
-
 				<section style="">
           <h2>Always test the right thing</h2><br/>
           <img class="stretch" src="img/testing.gif"/>
@@ -264,24 +293,52 @@
             A typical unit test will consist of the normal, happy path, maybe a few edge cases and maybe a few error handling cases. These are chosen by the developer based on what they know of the problem space and coverage of the unit will usually be limited by time and imagination. My experience of Java was that the effort of constructing the right objects to give to the method being tested was equal or greater than either the production code or the assertions, and a weariness of so much code could also be a limiting factor.
 
             In Clojure function signatures tend to be smaller, because it is easier to get sub data out of our data to send in rather than sending the whole structure. Data literals make the tests much more readable because nothing gets in the way. Both these things help the time and weariness factors, but what about imagination? What is the right thing to test?
+          </aside>
+        </section>
 
-            As I just mentioned, we use descriptions of our data in our production code to validate it looks like what our code expects and reject data that doesn't fit. We can use these same descriptions in our tests to generate ALL the data and send it into our function. We're no longer limited by our imagination and we no longer need to worry if we've tested the right thing or the wrong thing, because we've tested all the things.
+				<section style="">
+          <h2>Test all the things!</h2><br/>
+          <pre><code class="hljs" data-trim>
+(generate {:a Int :b Str})
+
+[{:a []
+  :b ""}
+
+ {:a [-18]
+  :b ""}
+
+ {:a [876545 -9776]
+  :b "-a90%bD!"}
+
+ ...
+
+ {:a [9 65342 9879634211 -31 1434988905 411 -65681247 ... ]
+  :b "      -  \OC6 daQ @'`sgeR ¬| f_bdA ... "}]
+          </code></pre>
+          <aside class="notes">
+            As I mentioned before we can use descriptions of our data in our production code to validate it looks like what our code expects and reject data that doesn't fit. We can use these same descriptions in our tests to generate ALL possible permutations of the data and send it into our function. We're no longer limited by our imagination and we no longer need to worry if we've tested the right thing or the wrong thing, because we've tested all the things.
           </aside>
         </section>
 
 				<section style="">
           <h2>Not so good</h2><br/>
+          These shouldn't be hearts!<br />
+          <ul>
+            <li>Bootstrap speed</li>
+            <li>Refactoring</li>
+            <li>Profiling</li>
+          </ul>
 
           <aside class="notes">
             Of course there's no such thing as a silver bullet and I have to be honest about some of the shortcomings of Clojure.
 
-            Startup speed - because after the runtime has started it still has to bootstrap itself before you can do anything. A lot better on Javascript though
+            Startup speed - because after the runtime has started it still has to bootstrap itself before you can do anything. Compared to something like Go or Nodejs you pay a startup tax which makes things like AWS Lambda not so cost effective. There has however been quite a lot of recent activity around running Clojurescript on Nodejs on the server which is much faster and some work that was done to run Clojure on Android also had a lot of performance improvements. For development you keep your REPL session open so you only feel the pain once or twice a day.
 
-            Refactoring - really quite good in intellij but still could be better.
+            Refactoring - really quite good in intellij but still not quite at the level you get for Java. You do tend to need less refactoring in Clojure compared to Java though - your function signatures tend to be more stable, because you don't declare types, and you tend to have very small functions so that you're more likely to replace them than refactor them. Some recent work in a library called clojure.spec to specify the shape of data flowing into and out of functions could also help here as it has been integrated within the Clojure language itself.
 
-            Profiling and debugging - a bit harder due to lazy evaluation and a lot of anonymous frames
+            Profiling and debugging - a bit harder due to lazy evaluation and a lot of anonymous functions which make stacktraces harder to read and CPU time apportioned in different ways to how you might expect.
 
-            None of these are killers, just on the wishlist
+            None of these are killers, just on the wishlist for improvements.
           </aside>
         </section>
 
@@ -303,7 +360,11 @@
 
 				<section style="">
           <h2>Community</h2><br/>
-
+          <ul>
+            <li>New & enthusiastic</li>
+            <li>Multilingual</li>
+            <li>Open</li>
+          </ul>
           <aside class="notes">
             Clojure's community is exciting because the language itself is still relatively new. It means that participants by definition are curious about new languages and bring their enthusiasm and thirst for learning with them. For the same reason it also means that developers come from many different backgrounds - some from Java and other JVM languages, some from other lisps, some from other functional languages. Everyone brings some knowledge with them and can feed the best bits into the ecosystem for us all to benefit from.
 
@@ -311,10 +372,17 @@
 
             Clojure also seems to have attained a critical mass in industry adoption. Years back it would take a coordinated campaign of lobbying to have any new language considered over the Java and Dot Net status quo, including Clojure. The fact that it ran on an existing runtime was possibly what helped to tip the balance for our first few projects.
 
-            Since then the increase in the number of usable, mainstream languages has helped make the argument easier but Clojure now has many high profile success stories. I've personally used it on successful projects in two investment banks and for the entire technology stack of one of the UK's largest property websites, OnTheMarket.com serving millions of users a day. The consultancy I work for, Juxt, specialises in Clojure and has helped deliver successful projects across many other industries from fashion to a boris bike scheme in Spain where Clojure runs on Point of Sale terminals. There are several teams with Clojure projects at Credit Suisse, where I am now, including the two owned by my team which are Clojure on the server and Clojurescript on the client. My team is also currently hiring so have a chat with me later if you'd like to know more.
+            Since then the increase in the number of usable, mainstream languages has helped make the argument easier but Clojure now has many high profile success stories. I've personally used it on successful projects in two investment banks and for the entire technology stack of one of the UK's largest property websites, OnTheMarket.com serving millions of users a day. The consultancy I work for, Juxt, specialises in Clojure and has helped deliver successful projects across many other industries from fashion to a boris bike scheme in Spain where Clojure runs on Point of Sale terminals. It sits well within multilingual teams as well. Currently my team at Credit Suisse has a mixture of Java, Clojure and Kotlin and is currently hiring so have a chat with me later if you'd like to know more.
           </aside>
         </section>
 
+				<section style="">
+          <h2>Synopsisize</h2><br/>
+
+          <aside class="notes">
+            Really the most important point I want to make is that Clojure makes you think in a different way. There are lots of exciting ideas coming through the community that have helped me grow as a developer and I believe the language is accessible for everyone to get a taste of it.
+          </aside>
+        </section>
 
 				<section>
           <pre><code class="hljs" data-trim>
