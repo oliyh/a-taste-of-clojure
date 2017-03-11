@@ -79,7 +79,7 @@
 
 				<section style="">
           <h2>Clojure 💖 JVM</h2>
-          <br/><br/><br/>
+          <br/><br/>
           (Clojure <span class="yellow">💖</span> Javascript too)
 
           <aside class="notes">
@@ -94,7 +94,7 @@
         </section>
 
 				<section style="">
-          <h2>Tooling</h2><br/>
+          <h2>Tooling</h2><br/><br/>
           <ul>
             <li>Two build tools, lein and boot</li>
             <li>All major IDEs</li>
@@ -150,7 +150,8 @@
 
 (map squares numbers)
 ;; => 0 1 4 9 16
-          </code></pre>
+          </code><img src="img/mc-hammer.gif" class="stretch" style="position: absolute; top: 0; right: 0; margin: 0;"/></pre>
+          
           <aside class="notes">
             All of Clojure's data types are immutable. You can do anything with them, but you can't do anything to them. Every operation on them returns new immutable data and the original is unchanged. Here, the array of numbers is unchanged even when I call functions to double or square every element. This is because the arrays I get back are brand new immutable arrays containing new data, leaving the old one untouched.
 
@@ -163,8 +164,8 @@
         </section>
 
 				<section data-background-image="img/to-infinity.jpg" style="">
-          <h2>To infinity...</h2><br/>
-          <pre><code class="hljs" data-trim>
+          <h2>To infinity...</h2><br/><br/><br/>
+          <pre class="bordered"><code class="hljs" data-trim>
 (defn fib
   ([] (fib 0 1))
   ([i j] (lazy-seq (cons i (fib j (+ i j))))))
@@ -177,18 +178,18 @@
         </section>
 
 				<section style="">
-          <h2>Inversion of control</h2><br/>
+          <h2>Inversion of inversion of control</h2><br/>
           <pre><code class="hljs" data-trim>
 (take 10 (fib))
 ;; => [0 1 1 2 3 5 8 13 21 34]
           </code></pre>
-
+          <img src="img/inversion.gif"/>
           <aside class="notes">
             So what good is an infinite series? We can't evaluate the whole thing, because we'd either run out of heap or reach the heat death of the universe. We haven't given the function a limit as to how many numbers we want in the sequence.
 
             Instead we can decide outside the series how many elements we want. They are evaluated lazily so if I ask for 10 elements it only has to calculate the first ten and then it will stop.
 
-            This has led to an inversion of control where the data and the use of the data have been separated which makes both the code and the data more reusable. If I had a Fibonnacci sequence that was limited to 1000 elements I would have to make sure that everywhere I used it was ok with that. With a lazily evaluated sequence I can pass the infinite sequence around and anyone can use as many elements as they want.
+            This has led to an inversion of inversion of control, where instead of injecting behaviour into our function we are instead letting the function return an agnostic and pure data series, so that the data and the use of the data have been separated which makes both the code and the data more reusable. If I had a Fibonnacci sequence that was limited to 1000 elements I would have to make sure that everywhere I used it was ok with that. With a lazily evaluated sequence I can pass the infinite sequence around and anyone can use as many elements as they want.
 
             This sort of thing makes your code more reusable, easier to read and purer and is just one of the ways that Clojure lets you express solutions in a different way.
           </aside>
@@ -257,7 +258,7 @@
 
 				<section data-background-image="img/schemas-everywhere.jpg" style="">
           <h2>Schemas everywhere</h2><br/><br/><br/>
-          <pre><code class="hljs" data-trim>
+          <pre class="bordered"><code class="hljs" data-trim>
 (defschema Foo {:a [Int]
                 :b Str})
 
@@ -296,9 +297,9 @@
           </aside>
         </section>
 
-				<section style="">
+				<section data-background-image="img/test-all-the-things.jpg" style="">
           <h2>Test all the things!</h2><br/>
-          <pre><code class="hljs" data-trim>
+          <pre class="bordered"><code class="hljs" data-trim>
 (generate {:a Int :b Str})
 
 [{:a []
@@ -321,12 +322,11 @@
         </section>
 
 				<section style="">
-          <h2>Not so good</h2><br/>
-          These shouldn't be hearts!<br />
+          <h2>Not so good</h2><br/><br/>
           <ul>
-            <li>Bootstrap speed</li>
-            <li>Refactoring</li>
-            <li>Profiling</li>
+            <li class="sad">Bootstrap speed</li>
+            <li class="sad">Refactoring</li>
+            <li class="sad">Profiling</li>
           </ul>
 
           <aside class="notes">
@@ -359,7 +359,7 @@
         </section>
 
 				<section style="">
-          <h2>Community</h2><br/>
+          <h2>Community</h2><br/><br/>
           <ul>
             <li>New & enthusiastic</li>
             <li>Multilingual</li>

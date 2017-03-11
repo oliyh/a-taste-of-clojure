@@ -69,6 +69,14 @@ img {
   margin: 0 0 0 -64px;
 }
 
+.reveal li.sad {
+  background: url('../img/bullet-sad.png') no-repeat left top;
+}
+
 .yellow {
     color: rgb(255, 235, 59);
+}
+
+.reveal pre.bordered {
+  border: 44px solid rgba(0,0,0,0.5)
 }
