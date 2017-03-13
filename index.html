@@ -120,17 +120,21 @@
   (map f (range 5)))
 
 (sequence-that doubles)
-;; => 0 2 4 6 8
+;; => [0 2 4 6 8]
           </code></pre>
           <pre><code class="hljs" data-trim>
 (defn squares [x]
   (* x x))
 
 (sequence-that (comp squares doubles))
-;; => 0 4 16 36 64
+;; => [0 4 16 36 64]
           </code></pre>
           <aside class="notes">
             Functional languages treat functions as first class citizens that can be referred to in the same way as everything else, allowing them to be passed around, called, closed over. Of course, you can achieve similar-looking code in a non-functional language but at a far greater cost in boilerplate, lines of code and glue which all add to the cognitive weight of the project.
+
+            Here on the first line I declare a function called doubles which takes a number x and returns a number which is x times two. The next function, sequence that, returns a sequence of numbers (limited to 0 to 4) with a function f applied to each number. f could be any function that takes a number. It doesn't have to return a number or anything at all. Underneath, we try it out by passing in our doubles function and get back a sequence of doubled numbers.
+
+            If I declare another function, squares, I can compose the doubles and squares functions together as a single function of one argument. The output of the sequence shows that the numbers from 0 to 4 have been doubled, then squared.
 
             When everything is stripped back to the bare definition of what it does it removes a lot of background processing from your brain, giving you a little extra capacity to focus on the task in hand. When entire concepts are removed, like static or final or overrides, you can look at a function and see what it does without worrying about constantly trying to work out if it was called on an instantiated object or is static, if the current state of the object can affect the return value, if this is the function being called or if someone has overridden it somewhere else.
 
@@ -155,11 +159,13 @@ numbers
           <aside class="notes">
             All of Clojure's data types are immutable. You can do anything with them, but you can't do anything to them. Every operation on them returns new immutable data and the original is unchanged. Here, the array of numbers is unchanged even when I call functions to double or square every element. This is because the arrays I get back are brand new immutable arrays containing new data, leaving the old one untouched.
 
+            Here, the sequence called numbers is unchanged despite mapping my doubles function over every number. The map function returned a new sequence of numbers, created from the output of the doubles function, and left the original numbers intact.
+
             Seems like a simple concept, and it is. The same concept exists in other languages too but is rarely the default and is something you have to go out of your way to use.
 
             Why is this such a big deal? Because, in normal code, it guarantees thread safety. The source of some of the most difficult to solve problems is suddenly eradicated completely. It's comparable to the way the JVM's memory model suddenly eradicated the whole concept of buffer overflow bugs, bugs which still afflict us today in the guises of Heartbleed and just a couple of weeks ago Cloudflare's Cloudbleed incident.
 
-            A lot of clever work went into making the Clojure data structures perform well. There are shorcuts, like concatenating lists returning a sequence referring to the original lists without actually copying the data on the heap. There is also some wizardry going on - there was an excellent talk at EuroClojure 2015 by Mohit Thatte about the implementation and some of the original solutions which were devised to make it work.
+            A lot of clever work went into making the Clojure data structures perform well. There are shorcuts - for example, concatenating two lists returns a sequence referring to the original lists without actually copying the data on the heap. There is also some wizardry going on - there was an excellent talk at EuroClojure 2015 by Mohit Thatte about the implementation and some of the novel solutions which were devised to make it work which I would recommend if you want to find out more.
           </aside>
         </section>
 
@@ -214,6 +220,8 @@ numbers
           <aside class="notes">
             Although Clojure is immutable and stateless by default, it's also a pragmatic and usable language, and sometimes you need a little bit of state to be able to achieve that. Clojure's answer is to construct a small walled garden around special mutable references to immutable data, which are called atoms. The value an atom refers to can be updated atomically, and the values themselves are immutable.
 
+            Here I declare an atom called counter, and initialise it pointing to a value of zero. I can get the value that the atom is referring to by dereffing it. I can provide a function to take the old value and return the next value, and swap it atomically into the atom. The function I've used here is inc, which increments a number by one. When I deref the atom now, I see it refers to the value 1.
+
             This gives us a safe place to store stateful things and reminds us that we are using state by making us use the wrapper functions around it. Outside the transaction we have normal Clojure data and can use it in the same way as any other data with perfect thread safety.
           </aside>
         </section>
@@ -233,6 +241,8 @@ numbers
             It encourages exploration and less reliance on the test scaffolding we might otherwise normally write as part of dogmatic TDD.
 
             - Map and filter some numbers
+            - Write a doubles function, try it
+            - Step into some function docs, then try them out
             - Show cljs repl too
 
           </aside>
@@ -255,7 +265,7 @@ numbers
 
             In type systems like Java's, all the type system really tells you is that your function takes one particular kind of data and returns another kind. It doesn't help you avoid nulls, it doesn't help you cover all code execution paths, it doesn't let you skip writing code because the compiler can infer the code from your types. Languages like Haskell and Idris do those things, and are a completely different use case, but when it comes to types in Java we're really just talking about kinds of data.
 
-            Clojure is good at data - it's designed for data. The data representations are succint and literal. Here is a vector, here is a map. Instead of checking just the kind of data, we can check the actual data flowing through our system.
+            Clojure is good at data - it's designed for it. The data representations are succint and literal. Here is a vector, here is a map. Instead of checking just the kind of data, we can check the actual data flowing through our system.
           </aside>
         </section>
 
@@ -275,14 +285,28 @@ numbers
 
           <aside class="notes">
             Clojure has a couple of libraries which let us describe the data we want and functions to coerce, conform and validate incoming data into the correct shape. We tend to put these checks at the edges of our systems so that we can reject data which is malformed and know with absolute certainty what the incoming data looks like. Our code within then becomes happy code without the need for null checks or guards for consistency.
+
+            Here I've got a description of what I want, and called it Foo. Foo describes a map which has an A, which is a sequence of numbers, and a B which is a string.
+
+            Underneath I'm testing whether my map of data satisfies Foo. It doesn't, because A is a string, not numbers, and B is a keyword, not a string. The validation error tells me what was wrong with the data so that I can discard it with a sensible and readable message.
           </aside>
         </section>
 
 				<section style="">
           <h2>Tempt fate</h2><br/>
-
+          <pre><code>
+street,city,zip,state,beds,baths,sq__ft,type,sale_date,price,latitude,longitude
+3526 HIGH ST,SACRAMENTO,95838,CA,2,1,836,Residential,Wed May 21 00:00:00 EDT 2008,59222,38.631913,-121.434879
+51 OMAHA CT,SACRAMENTO,95823,CA,3,1,1167,Residential,Wed May 21 00:00:00 EDT 2008,68212,38.478902,-121.431028
+2796 BRANCH ST,SACRAMENTO,95815,CA,2,1,796,Residential,Wed May 21 00:00:00 EDT 2008,68880,38.618305,-121.443839
+2805 JANETTE WAY,SACRAMENTO,95815,CA,2,1,852,Residential,Wed May 21 00:00:00 EDT 2008,69307,38.616835,-121.439146
+6001 MCMAHON DR,SACRAMENTO,95824,CA,2,1,797,Residential,Wed May 21 00:00:00 EDT 2008,81900,38.51947,-121.435768
+5828 PEPPERMILL CT,SACRAMENTO,95841,CA,3,1,1122,Condo,Wed May 21 00:00:00 EDT 2008,89921,38.662595,-121.327813
+          </code></pre>
           <aside class="notes">
             So having introduced those few things I'll now show you a quick practical example of working with data in Clojure. Here I have a CSV file containing house sales - it tells you the address of the property, a few details about the number of beds and square footage and the price it sold for.
+
+            Let's get this data out of the file and ask it some questions.
 
             Talk through the code...
           </aside>
@@ -303,7 +327,7 @@ numbers
 				<section data-background-image="img/test-all-the-things.jpg" style="">
           <h2>Test all the things!</h2><br/>
           <pre class="bordered"><code class="hljs" data-trim>
-(generate {:a Int :b Str})
+(generate {:a [Int] :b Str})
 
 [{:a []
   :b ""}
@@ -321,8 +345,24 @@ numbers
           </code></pre>
           <aside class="notes">
             As I mentioned before we can use descriptions of our data in our production code to validate it looks like what our code expects and reject data that doesn't fit. We can use these same descriptions in our tests to generate ALL possible permutations of the data and send it into our function. We're no longer limited by our imagination and we no longer need to worry if we've tested the right thing or the wrong thing, because we've tested all the things.
+
+            This kind of testing can find all sorts of corner cases and leads to very robust production code without the high cost of lots of test code. Cleverly it can also reduce test input to find the minimum failing case to make the test failures informative and useful.
           </aside>
         </section>
+
+				<section style="">
+          <h2>Rapid development</h2><br/>
+          <aside class="notes">
+            In engineering the term rapid development refers to the concept of roughing out products very cheaply and quickly using multi-purpose tools. These first drafts could then give useful feedback to inform the design process before any significant money was invested on expensive mass production tooling like dies, moulds and masks.
+
+            The same is true of tools we use in Clojure. I've already shown you the REPL, and now I'll show you a tool called Figwheel which watches Clojurescript source code and injects it into our browser whenever it changes.
+
+            -- In figwheel go and write a card which displays maybe some of the data from the house transactions from earlier.
+
+            The result is very rapid development of user interfaces which can be used in discussions with the customer on the way to designing the finished implementation.
+          </aside>
+        </section>
+
 
 				<section data-background-image="img/double-rainbow.jpg" style="">
           <h2>What does it mean?</h2><br/>
