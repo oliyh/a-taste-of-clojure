@@ -6,10 +6,11 @@
 
 (enable-console-print!)
 
+
 (defcard-rg card-test
   [:div.mdl-grid
    [:div.mdl-cell.mdl-cell--6-col
-    [app/card "Hello" "English"]]
+    [app/card "Good evening, ladies and gentlemen" "English (formal)"]]
 
    [:div.mdl-cell.mdl-cell--6-col
     [app/card "Hola" "Spanish"]]
