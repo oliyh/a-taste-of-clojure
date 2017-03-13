@@ -146,16 +146,16 @@
 (def numbers [0 1 2 3 4])
 
 (map doubles numbers)
-;; => 0 2 4 6 8
+;; => [0 2 4 6 8]
 
-(map squares numbers)
-;; => 0 1 4 9 16
+numbers
+;; => [0 1 2 3 4]
           </code><img src="img/mc-hammer.gif" class="stretch" style="position: absolute; top: 0; right: 0; margin: 0;"/></pre>
-          
+
           <aside class="notes">
             All of Clojure's data types are immutable. You can do anything with them, but you can't do anything to them. Every operation on them returns new immutable data and the original is unchanged. Here, the array of numbers is unchanged even when I call functions to double or square every element. This is because the arrays I get back are brand new immutable arrays containing new data, leaving the old one untouched.
 
-            Seems like a simple concept, and it is. The same concepts exists in other languages too but is rarely the default and is something you have to go out of your way to use.
+            Seems like a simple concept, and it is. The same concept exists in other languages too but is rarely the default and is something you have to go out of your way to use.
 
             Why is this such a big deal? Because, in normal code, it guarantees thread safety. The source of some of the most difficult to solve problems is suddenly eradicated completely. It's comparable to the way the JVM's memory model suddenly eradicated the whole concept of buffer overflow bugs, bugs which still afflict us today in the guises of Heartbleed and just a couple of weeks ago Cloudflare's Cloudbleed incident.
 
@@ -183,6 +183,7 @@
 (take 10 (fib))
 ;; => [0 1 1 2 3 5 8 13 21 34]
           </code></pre>
+          <br/><br/>
           <img src="img/inversion.gif"/>
           <aside class="notes">
             So what good is an infinite series? We can't evaluate the whole thing, because we'd either run out of heap or reach the heat death of the universe. We haven't given the function a limit as to how many numbers we want in the sequence.
@@ -220,8 +221,7 @@
 				<section style="">
           <h2>REPL</h2><br/>
 
-          Video of stuff happening in a repl here, in case it all goes wrong, but
-          consider live coding as well
+          Insert awesome here
 
           <aside class="notes">
             The REPL is a live coding environment where you can evaluate any expression. REPL stands for Read, Evaluate, Print, Loop and is not unique to Clojure but to Lisps in general and even a command line interface can be thought of in the same way.
@@ -231,6 +231,9 @@
             The IDEs I mentioned earlier integrate with a REPL environment and allow you to live-evaluation code in your IDE. You can hotload changes in source code into the REPL and it becomes a live playground for building, trying and testing code. There's a feeling that you no longer hold your code at arm's length, interacting with it only through tests. It's more like you can now hold it in your hand, turn it to see it from different angles, try things with it and play with it.
 
             It encourages exploration and less reliance on the test scaffolding we might otherwise normally write as part of dogmatic TDD.
+
+            - Map and filter some numbers
+            - Show cljs repl too
 
           </aside>
         </section>
@@ -276,7 +279,7 @@
         </section>
 
 				<section style="">
-          <h2>Some code</h2><br/>
+          <h2>Tempt fate</h2><br/>
 
           <aside class="notes">
             So having introduced those few things I'll now show you a quick practical example of working with data in Clojure. Here I have a CSV file containing house sales - it tells you the address of the property, a few details about the number of beds and square footage and the price it sold for.
@@ -321,6 +324,22 @@
           </aside>
         </section>
 
+				<section data-background-image="img/double-rainbow.jpg" style="">
+          <h2>What does it mean?</h2><br/>
+          <aside class="notes">
+            I've spoken about a lot of details about Clojure. Some of them will be novel, some won't. You might think that you could accomplish the same things in language X, or Y, and you'd be right. Any language which is Turing complete can solve the same problems, but that doesn't make them all the same.
+
+            Here are some things I've learned to really value about Clojure:
+            - It's simple. I have functions and I have data, and when I call a function with some data I know, without having to think, exactly which function I called and I know it will return the same result every time I call it. It's something that you first accept, then take for granted and finally demand as a basic human right.
+
+            - Data is everything. I want to see it and understand it, I don't want it hidden away in objects that obscure it and make me work to get the data back out.
+
+            - Entire classes of bugs eradicated. My poor brain can focus more on solving business problems rather than problems with my code! We've learned from and built upon our successes and failures of the past and today our options are better than ever.
+
+            - Being able to write code that can be run identically on the JVM or in a browser is amazing. It can reach every device on the planet and it gives great confidence when approaching a new project that Clojure can adapt to work for it. I can confidently call myself a full stack developer without a nasty feeling that I'm really just keeping my head above water on the client side stuff.
+          </aside>
+        </section>
+
 				<section style="">
           <h2>Not so good</h2><br/><br/>
           <ul>
@@ -339,22 +358,6 @@
             Profiling and debugging - a bit harder due to lazy evaluation and a lot of anonymous functions which make stacktraces harder to read and CPU time apportioned in different ways to how you might expect.
 
             None of these are killers, just on the wishlist for improvements.
-          </aside>
-        </section>
-
-				<section data-background-image="img/double-rainbow.jpg" style="">
-          <h2>What does it mean?</h2><br/>
-          <aside class="notes">
-            I've spoken about a lot of details about Clojure. Some of them will be novel, some won't. You might think that you could accomplish the same things in language X, or Y, and you'd be right. Any language which is Turing complete can solve the same problems, but that doesn't make them all the same.
-
-            Here are some things I've learned to really value about Clojure:
-            - It's simple. I have functions and I have data, and when I call a function with some data I know, without having to think, exactly which function I called and I know it will return the same result every time I call it. It's something that you first accept, then take for granted and finally demand as a basic human right.
-
-            - Data is everything. I want to see it and understand it, I don't want it hidden away in objects that obscure it and make me work to get the data back out. If you want the benefits of encapsulation to avoid an implementation detail being depended on in multiple places you can still write a function to achieve that - it's normal code reuse and we do it everywhere else.
-
-            - Entire classes of bugs eradicated. My poor brain can focus on solving business problems rather than problems with my code! We've learned from and built upon our successes and failures of the past and today our options are better than ever.
-
-            - Being able to write code that can be run identically on the JVM or in a browser is amazing. It can reach every device on the planet and it gives great confidence when approaching a new project that Clojure can adapt to work for it. I can confidently call myself a full stack developer without a nasty feeling that I'm really just keeping my head above water on the client side stuff.
           </aside>
         </section>
 
@@ -377,24 +380,13 @@
         </section>
 
 				<section style="">
-          <h2>Synopsisize</h2><br/>
-
+          <h2>TL;DR</h2><br/>
+          <img src="img/fell-asleep.jpg"/>
           <aside class="notes">
             Really the most important point I want to make is that Clojure makes you think in a different way. There are lots of exciting ideas coming through the community that have helped me grow as a developer and I believe the language is accessible for everyone to get a taste of it.
           </aside>
         </section>
 
-				<section>
-          <pre><code class="hljs" data-trim>
-
-
-              What’s cool?
-              Live server and client coding (example? Figwheel?)
-              And to another level – Devcards
-              Much more compact and concise, faster to work with (once you’ve got used to it being denser)
-          </code></pre>
-
-        </section>
 			</div>
 		</div>
 
@@ -407,6 +399,7 @@
 			history: true,
       margin: 0,
       center: false,
+      controls: false,
 
 			// More info https://github.com/hakimel/reveal.js#dependencies
 			dependencies: [
