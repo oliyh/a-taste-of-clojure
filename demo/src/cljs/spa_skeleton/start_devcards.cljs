@@ -13,10 +13,13 @@
     [app/card "Good evening, ladies and gentlemen" "English (formal)"]]
 
    [:div.mdl-cell.mdl-cell--6-col
-    [app/card "Hola" "Spanish"]]
+    [app/card "Hola" "Spanish" [:button.mdl-button "Learn more"]]]
 
    [:div.mdl-cell.mdl-cell--6-col
-    [app/card "Ciao" "Italian"]]
+    [app/card "Ciao"
+     [:div
+      [:p "Italian"]
+      [:p "protip: authentic Italian greetings include flamboyant hand gestures, hugging and kissing"]]]]
 
    [:div.mdl-cell.mdl-cell--6-col
     [app/card "Bonjour" "French"]]])

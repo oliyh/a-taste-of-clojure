@@ -44,7 +44,7 @@
           </div>
           <aside class="notes">
             Hello, I'm Oliver Hine
-            I'm going to talk about a functional lisp called Clojure and why you should be interested in it
+            I'm going to talk about a functional lisp called Clojure, why it is interesting to Java developers and show you some of the things I really like about it.
           </aside>
         </section>
 
@@ -52,8 +52,8 @@
           <h2>How my journey began</h2>
           <aside class="notes">
             I started my career as a Java developer by default - all the jobs going at the time were in Java and I'd picked up a bit at university although I had some self-taught knowledge of ASP, PHP, Javascript and the like.
-            After moving through several teams, inheriting codebases of various ages and in various states I settled into a team that was "agile", did "TDD", "XP" and everything else where I learned vast amounts about proper software craftmanship and was very happy there for several years refactoring my way through tens of thousands of lines of carefully extracted interfaces, thoughtfully devised abstractions and meticulously complete stubs for mocked tests.
-            We had some discussions about how Java's inheritance model didn't really let us express what we wanted to do, which at the time was something more akin to traits but I never seriously considered that rewriting the beast in a language with more features was possible.
+            After moving through several teams, inheriting codebases of various ages and in various states I settled into a team that was "agile", did TDD, XP and everything else where I learned vast amounts about proper software craftmanship and was very happy there for several years refactoring my way through tens of thousands of lines of carefully extracted interfaces, thoughtfully devised abstractions and meticulously complete stubs for mocked tests.
+            The application we worked on was big and complicated and had quite a lot of duplicated code. We had some discussions about how Java's inheritance model didn't really let us express what we wanted to do, which at the time was something more akin to traits but I never seriously considered that rewriting the beast in a language with more features was possible or would make much difference. I thought all the complexity lay in the business logic and expressing it in another language would be just as complicated.
             Fortunately a more enlightened team member introduced us to Clojure - this was around 2012 - and suddenly I had a totally different perspective on programming which I hope to share with you now.
           </aside>
         </section>
@@ -67,12 +67,18 @@
           </ul>
           <aside class="notes">
             These three points are the most important things to know about Clojure.
-            Number one, it's functional, meaning functions are first class. You can declare and call functions, pass functions into other functions and return functions just as you would any other piece of data.
+            Number one, it's functional, meaning functions are first class. You can declare and call functions, pass around and return functions just as you would any other piece of data.
+
             Two is that it is simple and concise - there is very little syntax. Calling functions and data literals is pretty much all you need which makes it quick to learn and easy to read.
-            Third is that data structures are immutable and highly efficient. This means that if I have a reference to some data I can guarantee that no one else can change it while I'm using it.
+
+            Third is that all data is immutable. This means that if I have a reference to some data I can guarantee that no one else can change it while I'm using it.
+
             I'll come back to these later to discuss in more detail.
+
             They are listed here because they're not the norm for programming languages, even though we could probably agree that they're good things.
-            They are also basic, fundamental things. Clojure doesn't really have any clever, complicated high level abstractions that you have to learn. Abstractions are what the programs we write should do, and trying to line up the abstractions of our programs with the abstractions of our language is often quite hard to do and can add a lot of complexity.
+
+            They are also basic, fundamental things. Clojure doesn't really have any clever, complicated high level abstractions that you have to learn. Abstractions over business logic are what the programs we write should do, and trying to line up the abstractions of our business with the abstractions of our language is often quite hard to do and can add a lot of implementation complexity without doing anything to solve the business complexity.
+
             Clojure is about stripping out all the complexity that comes from the language and giving you a tool that does simple, fundamental things very well.
           </aside>
         </section>
@@ -83,11 +89,13 @@
           (Clojure <span class="yellow">💖</span> Javascript too)
 
           <aside class="notes">
-            One thing missing from the previous slide is a practical and non-functional feature of Clojure which is that it compiles to and runs on the JVM. This was a pragmatic decision made both to improve Clojure's adoption appeal to people already familiar with the JVM and because of the high performance. In addition Clojure's ability to interop with Java code means that it benefits from all the libraries in the Java ecosystem so Clojure could hit the ground running without a lot of libraries having to be written first.
+            One other important thing about Clojure missing from the previous slide is a practical and non-functional feature which is that it compiles to and runs on the JVM. This was a pragmatic decision made both to improve Clojure's adoption appeal to people already familiar with the JVM and because of the high performance. In addition Clojure's ability to interop with Java code means that it benefits from all the libraries in the Java ecosystem so Clojure could hit the ground running as a language you could write practical applications in without a lot of libraries having to be written first.
 
-            Deployment is shipping an uberjar and running it with java -jar and popular deployment stacks like Heroku support Clojure making deployment really easy.
+            Deployment is shipping an uberjar, which contains Clojure and all your application's dependencies, and running it with java -jar. Popular deployment stacks like Heroku give first class support to Clojure making deployment really easy.
 
             Clojure also compiles to Javascript which is now the world's most widespread runtime, and takes it to places that we never dreamed of before. Clojure can be used in browsers and on servers which makes it amazing for full stack development.
+
+            There's even a runtime for Microsoft's Common Language Runtime, used by .NET.
 
             The simplicity of lisps has always been a great benefit for executing them on different runtimes. They tend to be bootstrapped from a few simple concepts which need implementing on the platform and you're away. There is a lisp called Shen which was designed for portability, and currently has implementations on 9 different runtimes.
           </aside>
@@ -106,7 +114,7 @@
             There are now two build tools, after many years with just one, that take care of all your dependencies, versioning, run profiles and everything else. They're both implemented in Clojure so understanding them, extending and changing them is quite easy.
 
             You can write Clojure with great editor support in Intellij, emacs, Eclipse and vim.
-            Some tools which really help are paredit for emacs which abstracts away all the parentheses into operations on s-expressions. I know they can be intimidating at first but after getting used to them and the naked structure of lisp unfolds before you, the patterns and metapatterns dance and you swim in the purity of quantified conception of ideas manifest.
+            I know all the parentheses can be intimidating at first but there are some tools which really help in the IDE - paredit for emacs abstracts away all the parentheses into operations on s-expressions. Once you've gotten used to them the naked structure of lisp unfolds before you, the patterns and metapatterns dance and you can swim in the purity of quantified conception of ideas manifest.
           </aside>
         </section>
 
@@ -130,13 +138,15 @@
 ;; => [0 4 16 36 64]
           </code></pre>
           <aside class="notes">
+            I'll just go back to my main points about Clojure to explore each in a bit more depth.
+
             Functional languages treat functions as first class citizens that can be referred to in the same way as everything else, allowing them to be passed around, called, closed over. Of course, you can achieve similar-looking code in a non-functional language but at a far greater cost in boilerplate, lines of code and glue which all add to the cognitive weight of the project.
 
-            Here on the first line I declare a function called doubles which takes a number x and returns a number which is x times two. The next function, sequence that, returns a sequence of numbers (limited to 0 to 4) with a function f applied to each number. f could be any function that takes a number. It doesn't have to return a number or anything at all. Underneath, we try it out by passing in our doubles function and get back a sequence of doubled numbers.
+            Here on the first line I declare a function called doubles which takes a number x and returns a number which is x times two. The next function, sequence that, returns a sequence of numbers (in this case the numbers 0 to 4) with a function f applied to each number. f could be any function that takes a number. It doesn't have to return a number or even anything at all. Underneath, we try it out by passing in our doubles function as f, and get back a sequence of doubled numbers as we expect.
 
             If I declare another function, squares, I can compose the doubles and squares functions together as a single function of one argument. The output of the sequence shows that the numbers from 0 to 4 have been doubled, then squared.
 
-            When everything is stripped back to the bare definition of what it does it removes a lot of background processing from your brain, giving you a little extra capacity to focus on the task in hand. When entire concepts are removed, like static or final or overrides, you can look at a function and see what it does without worrying about constantly trying to work out if it was called on an instantiated object or is static, if the current state of the object can affect the return value, if this is the function being called or if someone has overridden it somewhere else.
+            When everything is stripped back to the bare definition of what it does it removes a lot of background processing from your brain, giving you a little extra capacity to focus on the task in hand. When entire concepts are removed, like static or final or overrides, you can look at a function and see what it does without worrying about trying to work out if it was called on an instantiated object or is static, if the current state of the object can affect the return value, if this is the function being called or if someone has overridden it somewhere else.
 
             Your brain can slowly unwind and think about the problem you're actually trying to solve, to derive data from other data, and not have to fight uncertainty which has been built into the programming language you're using.
 
@@ -240,11 +250,11 @@ numbers
 
             It encourages exploration and less reliance on the test scaffolding we might otherwise normally write as part of dogmatic TDD.
 
+            - Show the range function
             - Map and filter some numbers
             - Write a doubles function, try it
             - Step into some function docs, then try them out
-            - Show cljs repl too
-
+            - Show cljs repl too - change the playground atom
           </aside>
         </section>
 
@@ -263,9 +273,9 @@ numbers
           <aside class="notes">
             The question I'd expect to be asked by a lot of developers coming from languages with type systems would be how we survive without one.
 
-            In type systems like Java's, all the type system really tells you is that your function takes one particular kind of data and returns another kind. It doesn't help you avoid nulls, it doesn't help you cover all code execution paths, it doesn't let you skip writing code because the compiler can infer the code from your types. Languages like Haskell and Idris do those things, and are a completely different use case, but when it comes to types in Java we're really just talking about kinds of data.
+            In type systems like Java's, all the type system really tells you is that your function takes one particular kind of data and returns another kind. The kind, or class, doesn't really tell you anything about the actual data contained within it. It doesn't help you avoid nulls, it doesn't help you cover all code execution paths, the compiler can't infer the code from your types and let you avoid writing the actual code. Languages like Haskell and Idris can do those things, and are a completely different use case, but when it comes to types in Java we're really just talking about kinds of data.
 
-            Clojure is good at data - it's designed for it. The data representations are succint and literal. Here is a vector, here is a map. Instead of checking just the kind of data, we can check the actual data flowing through our system.
+            In Clojure the data representations are succint and literal. Here is a vector, here is a map. Instead of checking just the kind of data, we can check the actual values of the data flowing through our system.
           </aside>
         </section>
 
@@ -284,7 +294,7 @@ numbers
           </code></pre>
 
           <aside class="notes">
-            Clojure has a couple of libraries which let us describe the data we want and functions to coerce, conform and validate incoming data into the correct shape. We tend to put these checks at the edges of our systems so that we can reject data which is malformed and know with absolute certainty what the incoming data looks like. Our code within then becomes happy code without the need for null checks or guards for consistency.
+            Clojure has a couple of libraries which let us describe the data we want and functions to coerce, conform and validate incoming data into the correct shape. We tend to put these checks at the edges of our systems so that we can reject data which is malformed and know with absolute certainty what the validated data looks like. Our code within then becomes happy code without the need for null checks or guards for consistency.
 
             Here I've got a description of what I want, and called it Foo. Foo describes a map which has an A, which is a sequence of numbers, and a B which is a string.
 
@@ -357,7 +367,7 @@ street,city,zip,state,beds,baths,sq__ft,type,sale_date,price,latitude,longitude
 
             The same is true of tools we use in Clojure. I've already shown you the REPL, and now I'll show you a tool called Figwheel which watches Clojurescript source code and injects it into our browser whenever it changes.
 
-            -- In figwheel go and write a card which displays maybe some of the data from the house transactions from earlier.
+            -- In figwheel go and write a card which displays some stuff from the playground atom, maybe some house transaction data. Talk about how the data is separate from the code
 
             The result is very rapid development of user interfaces which can be used in discussions with the customer on the way to designing the finished implementation.
           </aside>
@@ -372,6 +382,14 @@ street,city,zip,state,beds,baths,sq__ft,type,sale_date,price,latitude,longitude
             The devcards solution is not to try to do some magic with computers but instead present visuals to the developer representing lots of possible states at once. This lets you try out many ideas on your visual use cases and make sure that none of them look bad.
 
             I'll show you a quick example now.
+            -- doesn't look good - we've got text aligned with buttons, long title doesn't work
+            -- try adding empty button to everything, won't work
+            -- move mdl-card-expand from title to the text
+            -- remove the skeleton
+
+            In the screen I showed you earlier I didn't have long titles or a mixture of buttons and longer text. These are edge cases, and while we're good at testing edge cases with our data we often ignore edge cases in our UI because it is difficult to drive the application into the edge case state.
+
+            Devcards lets you explicitly define these edge cases and you can test them with your eyes easily on one screen.
           </aside>
         </section>
 
@@ -385,9 +403,9 @@ street,city,zip,state,beds,baths,sq__ft,type,sale_date,price,latitude,longitude
 
             - Data is everything. I want to see it and understand it, I don't want it hidden away in objects that obscure it and make me work to get the data back out.
 
-            - Entire classes of bugs eradicated. My poor brain can focus more on solving business problems rather than problems with my code! We've learned from and built upon our successes and failures of the past and today our options are better than ever.
+            - Entire classes of bugs eradicated. My poor brain can focus more on solving business problems rather than problems with my code! We've learned from and built upon our successes and failures of languages of the past and today our options are better than ever.
 
-            - Being able to write code that can be run identically on the JVM or in a browser is amazing. It can reach every device on the planet and it gives great confidence when approaching a new project that Clojure can adapt to work for it. I can confidently call myself a full stack developer without a nasty feeling that I'm really just keeping my head above water on the client side stuff.
+            - Being able to write code that can be run identically on the JVM or in a browser is amazing. It can reach every device on the planet and it gives great confidence when approaching a new project that Clojure can adapt to work for it. I can confidently call myself a full stack developer and really mean it.
           </aside>
         </section>
 
@@ -402,7 +420,7 @@ street,city,zip,state,beds,baths,sq__ft,type,sale_date,price,latitude,longitude
           <aside class="notes">
             Of course there's no such thing as a silver bullet and I have to be honest about some of the shortcomings of Clojure.
 
-            Startup speed - because after the runtime has started it still has to bootstrap itself before you can do anything. Compared to something like Go or Nodejs you pay a startup tax which makes things like AWS Lambda not so cost effective. There has however been quite a lot of recent activity around running Clojurescript on Nodejs on the server which is much faster and some work that was done to run Clojure on Android also had a lot of performance improvements. For development you keep your REPL session open so you only feel the pain once or twice a day.
+            Startup speed - because after the runtime has started it still has to bootstrap itself before you can do anything. Compared to something like Go or Nodejs you pay a startup tax which makes things like AWS Lambda not so cost effective. There has however been quite a lot of recent activity around running Clojurescript on Nodejs on the server which is much faster and some work that was done to run Clojure on Android also had a lot of performance improvements. For the developer it's not so bad because you keep your REPL session open so you only feel the pain once or twice a day.
 
             Refactoring - really quite good in intellij but still not quite at the level you get for Java. You do tend to need less refactoring in Clojure compared to Java though - your function signatures tend to be more stable, because you don't declare types, and you tend to have very small functions so that you're more likely to replace them than refactor them. Some recent work in a library called clojure.spec to specify the shape of data flowing into and out of functions could also help here as it has been integrated within the Clojure language itself.
 

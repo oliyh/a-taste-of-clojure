@@ -22,6 +22,7 @@
                                           :top "3em"}}
    [:div.mdl-card__title.mdl-card--expand
     {:style {:color "white"
+             ;;:background "black"
              :background "url('/images/skeleton-inverted.png') bottom right 0% no-repeat black"
              :backgroundSize "80px 80px"
              :height "80px"}}
@@ -60,14 +61,18 @@
     "Random number from server: "
     [:h4 @sse-events]]])
 
+(defonce playground (reagent/atom "Nothing here yet"))
+
 (defn- home [{:keys [martian sse-events]}]
   [:div.mdl-grid
-   [:div.mdl-cell.mdl-cell--4-col
+   [:div.mdl-cell.mdl-cell--6-col
     [welcome]]
-   [:div.mdl-cell.mdl-cell--4-col
+   [:div.mdl-cell.mdl-cell--6-col
     [(status-demo martian)]]
-   [:div.mdl-cell.mdl-cell--4-col
-    [sse-demo sse-events]]])
+   [:div.mdl-cell.mdl-cell--6-col
+    [sse-demo sse-events]]
+   [:div.mdl-cell.mdl-cell--6-col
+    [card "Playground" @playground]]])
 
 (defonce persistent-state (atom nil))
 
